@@ -13,7 +13,7 @@ fn main() -> Result<(), Box<dyn Error>> {
     if opt.all {
         SOLS.keys().copied().map(|k,| run(k)).collect::<Result<Vec<_>, _>>()?;
     } else if opt.day.is_some() && opt.part.is_some() {
-        let key = (opt.day.unwrap(), opt.day.unwrap());
+        let key = (opt.day.unwrap(), opt.part.unwrap());
         run(key)?;
     } else {
         let msg = format!("Either specify '-a' or '-d' AND '-p'");
