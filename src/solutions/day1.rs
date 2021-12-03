@@ -1,5 +1,3 @@
-use std::fs::File;
-
 fn inp_to_vec(inp: &str) -> Vec<usize> {
     inp
     .split_whitespace()
@@ -27,5 +25,13 @@ pub fn part2(inp: String) -> () {
     // Turn string of lines into vector of integers
     let vals = inp_to_vec(&inp);
 
-    println!{"Hello World!"};
+    let res = vals.windows(4).fold(0, |acc, win| {
+        if win[3] > win[0] {
+            acc + 1
+        } else {
+            acc
+        }
+    });
+
+    println!("Result for day 1, part 2: {}", res);
 }
