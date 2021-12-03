@@ -1,33 +1,36 @@
-use dotenv;
-use reqwest;
-use std::env;
 use std::error::Error;
-use std::sync::Arc;
+use dotenv;
+use structopt::StructOpt;
+use aoc2021_rs::{setup::get_data, cli::Opt, solutions::SOLS};
+
+const DATA_DIR: &str = "./data";
 
 fn main() -> Result<(), Box<dyn Error>> {
-    // Get token from environment
     dotenv::dotenv().ok();
-    let token = env::var("AOC_SESSION_TOKEN")
-        .expect("Session token (AOC_SESSION_TOKEN) not found in environment variables");
+    env_logger::init();
+    
+    let opt = Opt::from_args();
+    if opt.all {
+        SOLS.keys().copied().map(|k,| run(k)).collect::<Result<Vec<_>, _>>()?;
+    } else if opt.day.is_some() && opt.part.is_some() {
+        let key = (opt.day.unwrap(), opt.day.unwrap());
+        run(key)?;
+    } else {
+        let msg = format!("Either specify '-a' or '-d' AND '-p'");
+        return Err(msg.into());
+    }
 
-    // Set up cookie store
-    let base_url: reqwest::Url = "https://adventofcode.com"
-        .parse()
-        .expect("Parsing AoC URL failed");
-    let cookie_str = format!("session={}", token);
-    let jar = reqwest::cookie::Jar::default();
-    jar.add_cookie_str(&cookie_str, &base_url);
+    Ok(())
+}
 
-    // Create client with cookie
-    let client = reqwest::blocking::Client::builder()
-        .cookie_provider(Arc::new(jar))
-        .build()?;
-
-    // Use client to get input data
-    let resp = client
-        .get("https://adventofcode.com/2021/day/1/input")
-        .send()?;
-    dbg!(resp.text());
-
+fn run(key: (usize, usize)) -> Result<(), Box<dyn Error>>{
+    let f = SOLS.get(&key);
+    if let Some(f) = f {
+        let data = get_data(key.0, DATA_DIR)?;
+        f(data);
+    } else {
+        let msg = format!("Solution for day {0} part {1} does not exist yet!", key.0, key.1);
+        return Err(msg.into());
+    }
     Ok(())
 }
