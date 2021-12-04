@@ -19,7 +19,20 @@ pub fn part1(inp: String) -> () {
     let epsilon = gamma ^ BIT_MASK;
     println!("Result for day 3, part 1: {}", epsilon * gamma);
 }
+// endregion
 
+// region: Part 2
+pub fn part2(inp: String) -> () {
+    // Set up data
+    let nums = inp.lines().map(|l| usize::from_str_radix(l, 2).unwrap()).collect::<Vec<_>>();
+    let mut counts = vec![0usize; BIT_WIDTH];
+    // Update bit counts for each number
+    nums.iter().for_each(|num| count_bits(&mut counts, *num));
+    dbg!(&counts);
+}
+// endregion
+
+// region: Common functions
 fn count_bits(counts: &mut Vec<usize>, num: usize) {
     for idx in 0..BIT_WIDTH {
         let mask = 1usize << idx;
@@ -28,10 +41,4 @@ fn count_bits(counts: &mut Vec<usize>, num: usize) {
         }
     }
 }
-// endregion
-
-// region: Part 2
-pub fn part2(_inp: String) -> () {
-    println!{"Hello World!"};
-}
-// endregion
+// endregion 
