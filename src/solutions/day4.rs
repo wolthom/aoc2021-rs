@@ -1,3 +1,5 @@
+use std::borrow::BorrowMut;
+use std::collections::HashSet;
 use std::fmt::{self, Debug};
 use std::{str::FromStr, num::ParseIntError, fmt::{Display, Formatter}};
 
@@ -5,9 +7,11 @@ const ROWS: usize = 5;
 const COLS: usize = 5;
 
 
+#[derive(Clone)]
 struct Board{
     nums: [(u8, bool); ROWS*COLS],
     last: u8,
+    done: bool,
 }
 
 impl Board{
@@ -15,6 +19,7 @@ impl Board{
         Self {
             nums: [(0, false); ROWS*COLS],
             last: 0,
+            done: false,
         }
     }
 
@@ -50,6 +55,9 @@ impl Board{
     }
 
     fn check(&self) -> bool {
+        if self.done {
+            return true;
+        }
         let mut done = false;
         for ridx in 0..ROWS{
             done = self.check_row(ridx);
@@ -76,22 +84,47 @@ impl Board{
 pub fn part1(inp: String) -> () {
     let (vals, boards) = parse_input(&inp);
     let mut boards = boards.map(|board_str| Board::from_str(board_str).unwrap()).collect::<Vec<_>>();
-    // dbg!(&boards[9]);
     'outer: for val in &vals {
         // Update each board for current value and check for completion
-        for (idx, b) in (&mut boards).iter_mut().enumerate() {
+        for b in &mut boards {
             let hit = b.mark_val(*val);
             if hit {
                 let done = b.check();
                 if done {
-                    println!("Board {} is completed! Score: {}", idx, b.score());
+                    println!("Result for day 4, part 1: {}", b.score());
                     break 'outer;
                 }
             }
         }
     }
-    // dbg!(&boards[9]);
-    println!("Result for day 4, part 1: ");
+}
+
+
+pub fn part2(inp: String) -> () 
+{
+    let (vals, boards) = parse_input(&inp);
+    let boards = boards.map(|board_str| Board::from_str(board_str).unwrap()).collect::<Vec<_>>();
+
+    let mut open_boards = boards.clone();
+    let mut completed: Vec<Board> = Vec::new();
+    for val in &vals {
+        if open_boards.len() == 0 {
+            break;
+        }
+        completed.clear();
+        let mut tmp = Vec::new();
+        for mut board in open_boards{
+            let hit = board.mark_val(*val);
+            if hit && board.check() {
+                completed.push(board);
+            } else {
+                tmp.push(board);
+            }
+        }
+        open_boards = tmp;
+    }
+    let min_score = completed.iter().map(|b| b.score()).min().unwrap();
+    println!("Result for day 4, part 2: {}", min_score);
 }
 
 fn parse_input(inp: &str) -> (Vec<u8>, impl Iterator<Item = &str>) {
@@ -99,10 +132,6 @@ fn parse_input(inp: &str) -> (Vec<u8>, impl Iterator<Item = &str>) {
     let vals = parts.next().unwrap();
     let vals = vals.split(',').map(|num_str| u8::from_str_radix(num_str, 10).unwrap()).collect::<Vec<_>>();
     (vals, parts)
-}
-
-pub fn part2(inp: String) -> () {
-    println!("Result for day 4, part 2: ");
 }
 
 // region: Utility impls
