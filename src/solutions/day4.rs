@@ -97,7 +97,6 @@ pub fn part1(inp: String) -> () {
     }
 }
 
-
 pub fn part2(inp: String) -> () {
     let (vals, boards) = parse_input(&inp);
     let boards = boards.map(|board_str| Board::from_str(board_str).unwrap()).collect::<Vec<_>>();
