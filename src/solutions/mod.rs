@@ -7,6 +7,7 @@ mod day3;
 mod day4;
 mod day5;
 mod day6;
+mod day7;
 
 type Callback = fn(data: String) -> ();
 
@@ -25,6 +26,8 @@ lazy_static!{
         m.insert((5,2),  day5::part2  as Callback);
         m.insert((6,1),  day6::part1  as Callback);
         m.insert((6,2),  day6::part2  as Callback);
+        m.insert((7,1),  day7::part1  as Callback);
+        m.insert((7,2),  day7::part2  as Callback);
         m
     };
 }
