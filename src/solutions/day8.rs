@@ -1,7 +1,6 @@
 use std::collections::{BTreeMap, BTreeSet};
 
 pub fn part1(inp: String) -> () {
-    // 1, 4, 7, 8
     let lens = inp
         .trim()
         .lines()
@@ -25,7 +24,7 @@ pub fn part2(inp: String) -> () {
         .split('\n')
         .map(|l| parse_digit(l))
         .collect::<Vec<_>>();
-        
+
     println!("Result for day 8, part 2: {}", readings.iter().sum::<u32>());
 }
 
@@ -79,11 +78,16 @@ fn digits_to_num(digits: &Vec<u8>) -> u32 {
 }
 
 fn find_len(patterns: &mut Vec<Pattern>, pat_len: usize) -> Pattern {
-    let idx = patterns.iter().position(|p| p.len() ==pat_len).unwrap();
+    let idx = patterns.iter().position(|p| p.len() == pat_len).unwrap();
     patterns.swap_remove(idx)
 }
 
-fn find_overlap(patterns: &mut Vec<Pattern>, find_pat: &Pattern, pat_len: usize, overlap: usize) -> Pattern {
+fn find_overlap(
+    patterns: &mut Vec<Pattern>,
+    find_pat: &Pattern,
+    pat_len: usize,
+    overlap: usize,
+) -> Pattern {
     let mut candidates = patterns
         .iter()
         .enumerate()
