@@ -1,4 +1,3 @@
-use itertools::Itertools;
 use std::{collections::HashMap, num::ParseIntError, str::FromStr};
 
 pub fn part1(inp: String) -> () {
@@ -104,7 +103,7 @@ impl Line {
         // Iterate over x-values
         let r = self.start.x.min(self.end.x)..=self.start.x.max(self.end.x);
         for x in r {
-                buf.push(Pos::new(x, self.start.y));
+            buf.push(Pos::new(x, self.start.y));
         }
     }
 
@@ -116,7 +115,7 @@ impl Line {
         // Iterate over y-values
         let r = self.start.y.min(self.end.y)..=self.start.y.max(self.end.y);
         for y in r {
-                buf.push(Pos::new(self.start.x, y));
+            buf.push(Pos::new(self.start.x, y));
         }
     }
 
